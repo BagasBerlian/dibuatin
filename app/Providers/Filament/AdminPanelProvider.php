@@ -6,6 +6,7 @@ use App\Filament\Resources\AttributeResource;
 use App\Filament\Resources\PricingResource;
 use App\Filament\Resources\TransactionResource\Widgets\StatsOverview;
 use App\Filament\Resources\TypeProductResource;
+use App\Http\Middleware\AdminAccessMiddleware;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -65,6 +66,7 @@ class AdminPanelProvider extends PanelProvider
                 SubstituteBindings::class,
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
+                \App\Http\Middleware\AdminAccessMiddleware::class,
                 // 'admin.access',
             ])
             ->authMiddleware([

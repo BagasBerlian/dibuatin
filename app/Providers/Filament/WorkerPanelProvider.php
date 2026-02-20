@@ -57,6 +57,7 @@ class WorkerPanelProvider extends PanelProvider
                 SubstituteBindings::class,
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
+                \App\Http\Middleware\AdminAccessMiddleware::class,
             ])
             ->authMiddleware([
                 Authenticate::class,

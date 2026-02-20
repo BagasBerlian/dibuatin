@@ -26,6 +26,10 @@ class AdminAccessMiddleware
         //     return redirect()->route('dashboard')->with('error', 'Anda tidak memiliki akses ke halaman admin.');
         // }
 
-        return $next($request);
+        if (Auth::check() && Auth::user()->role !== 'customer') {
+            return $next($request);
+        }
+
+        return redirect('/')->with('error', 'Anda tidak memiliki akses ke halaman ini');
     }
 }

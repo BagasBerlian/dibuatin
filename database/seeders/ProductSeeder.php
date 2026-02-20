@@ -13,36 +13,13 @@ class ProductSeeder extends Seeder
      */
     public function run(): void
     {
-        Product::create([
-            'name' => 'Logo',
-        ]);
 
-        Product::create([
-            'name' => 'Lanyard',
-        ]);
+        $list_product = ["Logo", "Lanyard", "Kartu Nama", "Brosur", "Poster", "Stiker", "Feeds IG", "Story IG"];
 
-        Product::create([
-            'name' => 'Kartu Nama',
-        ]);
-
-        Product::create([
-            'name' => 'Brosur',
-        ]);
-
-        Product::create([
-            'name' => 'Poster/Banner',
-        ]);
-
-        Product::create([
-            'name' => 'Stiker Produk',
-        ]);
-        
-        Product::create([
-            'name' => 'Feeds IG',
-        ]);
-
-        Product::create([
-            'name' => 'Story IG',
-        ]);
+        foreach ($list_product as $product) {
+            Product::create([
+                "name" => $product
+            ]);
+        }
     }
 }
