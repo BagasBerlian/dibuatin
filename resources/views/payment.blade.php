@@ -70,8 +70,7 @@
                     <h2 class="text-2xl font-medium">{{ $order->user->phone }}</h2>
                 </div>
             </div>
-            <div class="row-span-4 flex w-full pr-[30%] mb-[50%] rounded-xl scale-[1.5] translate-x-1/4 translate-y-1/4"
-                id="snap-container">
+            <div class="row-span-4 flex w-full pr-[30%] mb-[50%] rounded-xl translate-x-1/4" id="snap-container">
             </div>
             <div class="bg-white w-full h-fit p-8 rounded-md shadow-lg">
                 <h2 class="font-bold w-full text-2xl mb-8 align-middle">Detail Project</h2>
@@ -90,7 +89,7 @@
             </div>
         </div>
     </form>
-    <script type="text/javascript" src="https://app.sandbox.midtrans.com/snap/snap.js"
+    <script type="text/javascript" src="https://app.midtrans.com/snap/snap.js"
         data-client-key="{{ config('midtrans.client_key') }}"></script>
     <script type="text/javascript">
         window.onload = function initMidtrans() {
@@ -143,7 +142,7 @@
                 .then(response => response.json())
                 .then(data => {
                     console.log('Success:', data);
-                    alert('Data stored successfully');
+                    // alert('Data stored successfully');
                 })
                 .catch((error) => {
                     console.error('Error:', error);

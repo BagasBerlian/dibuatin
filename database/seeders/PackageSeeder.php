@@ -22,7 +22,7 @@ class PackageSeeder extends Seeder
                 'name' => "Paket " . $faker->unique()->word(),
                 'product_id' => rand(1, 2),
                 'detail_package' => $faker->sentence(10),
-                'price' => rand(30000, 150000),
+                'price' => rand(1, 11000),
                 'working_time' => rand(1, 10),
                 'unit' => $faker->randomElement(['days', 'hours']),
                 'created_at' => now(),

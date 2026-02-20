@@ -14,11 +14,35 @@ class ProductSeeder extends Seeder
     public function run(): void
     {
         Product::create([
-            'name' => 'Short Video Ads',
+            'name' => 'Logo',
         ]);
 
         Product::create([
-            'name' => 'Advertising Design',
+            'name' => 'Lanyard',
+        ]);
+
+        Product::create([
+            'name' => 'Kartu Nama',
+        ]);
+
+        Product::create([
+            'name' => 'Brosur',
+        ]);
+
+        Product::create([
+            'name' => 'Poster/Banner',
+        ]);
+
+        Product::create([
+            'name' => 'Stiker Produk',
+        ]);
+        
+        Product::create([
+            'name' => 'Feeds IG',
+        ]);
+
+        Product::create([
+            'name' => 'Story IG',
         ]);
     }
 }
