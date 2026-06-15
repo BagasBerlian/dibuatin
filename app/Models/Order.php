@@ -35,8 +35,11 @@ class Order extends Model
                 $order->id = (string) Str::uuid();
             }
 
-            if ($order->package) {
-                $order->price = $order->package->price;
+            if ($order->package_id && empty($order->price)) {
+                $package = \App\Models\Package::find($order->package_id);
+                if ($package) {
+                    $order->price = $package->price;
+                }
             }
 
             // Fallback to 0 if no price
