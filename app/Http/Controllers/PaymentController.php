@@ -77,4 +77,18 @@ class PaymentController extends Controller
             'data' => $data,
         ]);
     }
+
+    public function resumePayment(Request $request, $orderId)
+    {
+        $order = Order::where('id', $orderId)
+                    ->where('user_id', Auth::user()->id)
+                    ->first();
+
+        if (!$order) {
+            return redirect()->route('history.show')->with('error', 'Order tidak ditemukan.');
+        }
+
+        session()->put('order_id', $order->id);
+        return redirect()->route('payment');
+    }
 }

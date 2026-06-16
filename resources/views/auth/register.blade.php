@@ -21,11 +21,16 @@
         <div class="mt-4">
             <x-input-label for="phone"
                 :value="__('Phone')" />
-            <x-text-input id="phone"
-                class="block mt-1 w-full"
-                type="text" name="phone"
-                :value="old('phone')" required
-                autocomplete="username" />
+            <div class="relative mt-1">
+                <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                    <span class="text-gray-500 text-sm font-medium">+62</span>
+                </div>
+                <x-text-input id="phone"
+                    class="block w-full pl-11"
+                    type="text" name="phone"
+                    :value="old('phone')" required
+                    autocomplete="username" placeholder="81234567890" />
+            </div>
             <x-input-error
                 :messages="$errors->get('phone')"
                 class="mt-2" />

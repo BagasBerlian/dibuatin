@@ -21,7 +21,7 @@ class UserSeeder extends Seeder
         User::create([
             'id' => Str::uuid(),
             'name' => 'Administrator',
-            'phone' => '081234567890',
+            'phone' => '6281234567890',
             'email' => 'admin@dibuatin.com',
             'password' => Hash::make('admin'),
             'role' => 'admin',
@@ -30,7 +30,7 @@ class UserSeeder extends Seeder
         User::create([
             'id' => Str::uuid(),
             'name' => "Customer",
-            'phone' => '081232324545',
+            'phone' => '6281232324545',
             'email' => "customer@gmail.com",
             'password' => Hash::make('customer'),
             'role' => 'customer',
@@ -39,7 +39,7 @@ class UserSeeder extends Seeder
         User::create([
             'id' => Str::uuid(),
             'name' => "Worker",
-            'phone' => '083123456788',
+            'phone' => '6283123456788',
             'email' => "worker@gmail.com",
             'password' => Hash::make('worker'),
             'role' => 'worker',
@@ -51,7 +51,7 @@ class UserSeeder extends Seeder
             User::create([
                 'id' => Str::uuid(),
                 'name' => $faker->name,
-                'phone' => '08' . substr($faker->unique()->numerify('##########'), 2),
+                'phone' => '628' . substr($faker->unique()->numerify('##########'), 2),
                 'email' => $faker->unique()->safeEmail,
                 'password' => Hash::make('customer'),
                 'role' => 'customer',
@@ -63,11 +63,11 @@ class UserSeeder extends Seeder
             User::create([
                 'id' => Str::uuid(),
                 'name' => $faker->name,
-                'phone' => '08' . substr($faker->unique()->numerify('##########'), 2),
+                'phone' => '628' . substr($faker->unique()->numerify('##########'), 2),
                 'email' => $faker->unique()->safeEmail,
                 'password' => Hash::make('worker'),
                 'role' => 'worker',
-                'is_active' => $i % 2 === 0 ? 1 : 0,
+                'is_active' => $faker->boolean(80), // 80% kemungkinan aktif
             ]);
         }
     }
