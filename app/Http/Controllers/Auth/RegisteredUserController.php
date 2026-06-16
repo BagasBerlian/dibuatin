@@ -29,6 +29,16 @@ class RegisteredUserController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
+        $phone = preg_replace('/\D/', '', $request->phone);
+        if (str_starts_with($phone, '0')) {
+            $phone = substr($phone, 1);
+        } elseif (str_starts_with($phone, '62')) {
+            $phone = substr($phone, 2);
+        }
+        $phone = '62' . $phone;
+
+        $request->merge(['phone' => $phone]);
+
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'phone' => ['required', 'string', 'max:20'],

@@ -46,72 +46,114 @@
             </div>
         </div>
     </div>
-    <form action="{{ route('payment.store') }}" method="post" id="payment">
-        <div class="grid grid-cols-2 gap-8 mx-24 my-16">
-            <div class="bg-white w-full h-fit p-8 rounded-md shadow-lg">
-                <div class="flex flex-row mb-4">
-                    <h2 class="font-bold text-lg w-1/4">Order ID</h2>
-                    <h2 class="w-full text-lg inline-block align-middle text-right">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mx-24 my-16">
+        <!-- Left Side: Order Details -->
+        <div class="flex flex-col gap-6">
+            <div class="bg-white w-full h-fit p-8 rounded-xl shadow-lg">
+                <div class="flex flex-row justify-between items-center border-b pb-4 mb-4">
+                    <h2 class="font-bold text-lg text-gray-700">Order ID</h2>
+                    <h2 class="text-lg font-mono text-orange-500">
                         {{ session('order_id') }}
                     </h2>
                 </div>
-                <input type="text" value="{{ session('order_id') }}" name="order_id" hidden>
-                <h2 class="font-bold w-full text-2xl mb-8">Identity</h2>
-                <div class="flex flex-row py-1">
-                    <h2 class="text-gray-800">Name:</h2>
-                    <h2 class="w-full text-2xl text-right font-medium">{{ $order->user->name }}</h2>
-                </div>
-                <div class="flex flex-row py-1">
-                    <h2 class="w-full text-gray-800">Email:</h2>
-                    <h2 class="text-right text-2xl font-medium">{{ $order->user->email }}</h2>
-                </div>
-                <div class="flex flex-row py-1">
-                    <h2 class="w-full text-gray-800">No Telephone:</h2>
-                    <h2 class="text-2xl font-medium">{{ $order->user->phone }}</h2>
+                
+                <h2 class="font-bold text-xl mb-4 text-gray-800">Customer Identity</h2>
+                <div class="flex flex-col gap-3">
+                    <div class="flex justify-between border-b border-gray-100 pb-2">
+                        <span class="text-gray-600">Name</span>
+                        <span class="font-medium text-gray-900">{{ $order->user->name }}</span>
+                    </div>
+                    <div class="flex justify-between border-b border-gray-100 pb-2">
+                        <span class="text-gray-600">Email</span>
+                        <span class="font-medium text-gray-900">{{ $order->user->email }}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">No Telephone</span>
+                        <span class="font-medium text-gray-900">{{ $order->user->phone }}</span>
+                    </div>
                 </div>
             </div>
-            <div class="row-span-4 flex w-full pr-[30%] mb-[50%] rounded-xl translate-x-1/4" id="snap-container">
+
+            <div class="bg-white w-full h-fit p-8 rounded-xl shadow-lg">
+                <h2 class="font-bold text-xl mb-4 text-gray-800">Detail Project</h2>
+                <div class="flex flex-col gap-3">
+                    <div class="flex justify-between border-b border-gray-100 pb-2">
+                        <span class="text-gray-600">Package</span>
+                        <span class="font-medium text-gray-900">{{ $order->package->name }}</span>
+                    </div>
+                    <div class="flex justify-between border-b border-gray-100 pb-2">
+                        <span class="text-gray-600">Orientation</span>
+                        <span class="font-medium text-gray-900 capitalize">{{ $order->orientation }}</span>
+                    </div>
+                    <div class="flex flex-col mt-2">
+                        <span class="text-gray-600 mb-1">Request:</span>
+                        <p class="font-medium text-gray-900 bg-gray-50 p-3 rounded-lg border border-gray-100">{{ $order->request }}</p>
+                    </div>
+                </div>
             </div>
-            <div class="bg-white w-full h-fit p-8 rounded-md shadow-lg">
-                <h2 class="font-bold w-full text-2xl mb-8 align-middle">Detail Project</h2>
-                <div class="flex flex-row py-1">
-                    <h2 class="text-gray-800 flex items-center">Request:</h2>
-                    <h2 class="w-full ms-20 text-right text-lg font-medium">{{ $order->request }}</h2>
-                </div>
-                <div class="flex flex-row py-1">
-                    <h2 class="w-full text-gray-800">Orientation:</h2>
-                    <h2 class="text-right text-2xl font-medium">{{ $order->orientation }}</h2>
-                </div>
-                <div class="flex flex-row py-1">
-                    <h2 class="w-1/2 text-gray-800">Package:</h2>
-                    <h2 class="w-full text-right text-2xl font-medium">{{ $order->package->name }}</h2>
-                </div>
+
+            <!-- Sandbox Simulator Notice -->
+            <div class="bg-white w-full h-fit p-6 rounded-xl shadow-lg border-2 border-orange-100 flex flex-col gap-3">
+                <h2 class="font-bold text-lg text-gray-800">Payment Simulator</h2>
+                <p class="text-gray-600 text-sm">
+                    This order is in sandbox mode. You can simulate a successful payment using the Midtrans Simulator.
+                </p>
+                <a href="https://simulator.sandbox.midtrans.com/" target="_blank" rel="noopener noreferrer" 
+                    class="mt-2 text-center bg-orange-500 hover:bg-orange-600 text-white font-medium py-2 px-4 rounded-lg transition-colors">
+                    Open Simulator
+                </a>
             </div>
         </div>
-    </form>
-    <script type="text/javascript" src="https://app.midtrans.com/snap/snap.js"
+
+        <!-- Right Side: Midtrans Snap Payment UI -->
+        <div class="flex items-start justify-center lg:justify-end">
+            <!-- Container for Snap embed. Giving it a fixed width is recommended by Midtrans for embed mode -->
+            <div id="snap-container" class="w-full max-w-[600px] h-fit bg-white rounded-xl shadow-xl overflow-hidden border border-gray-200 min-h-[600px]">
+                <!-- Snap interface loads here -->
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript" src="https://app.sandbox.midtrans.com/snap/snap.js"
         data-client-key="{{ config('midtrans.client_key') }}"></script>
     <script type="text/javascript">
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            let bgColor = 'bg-green-500';
+            if (type === 'error') bgColor = 'bg-red-500';
+            if (type === 'warning') bgColor = 'bg-orange-500';
+            
+            toast.className = `fixed top-10 right-10 z-50 px-6 py-3 rounded-lg shadow-xl font-semibold text-white transition-opacity duration-300 ${bgColor} flex items-center gap-2`;
+            
+            // Add icon
+            if (type === 'success') {
+                toast.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg> <span>${message}</span>`;
+            } else {
+                toast.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg> <span>${message}</span>`;
+            }
+
+            document.body.appendChild(toast);
+            
+            // Fade out and remove
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
         window.onload = function initMidtrans() {
             window.snap.embed('{{ $snapToken }}', {
                 embedId: 'snap-container',
                 onSuccess: function(result) {
-                    storeData(result.order_id, result.payment_type, result.transaction_id, result
-                        .transaction_status);
-                    let dashboardUrl = "{{ route('history.show') }}";
-                    window.location.href = dashboardUrl;
+                    storeData(result.order_id, result.payment_type, result.transaction_id, result.transaction_status);
                 },
                 onPending: function(result) {
-                    /* You may add your own implementation here */
                     console.log(result);
-                    alert("wating your payment!");
+                    showToast("Waiting for your payment to complete...", "warning");
                 },
                 onError: function(result) {
-                    /* You may add your own implementation here */
-                    alert("payment failed!");
                     console.log(result);
+                    showToast("Payment failed!", "error");
                 }
-
             });
         }
 
@@ -142,10 +184,14 @@
                 .then(response => response.json())
                 .then(data => {
                     console.log('Success:', data);
-                    // alert('Data stored successfully');
+                    showToast('Payment successful! Redirecting to history...', 'success');
+                    setTimeout(() => {
+                        window.location.href = "{{ route('history.show') }}";
+                    }, 2000);
                 })
                 .catch((error) => {
                     console.error('Error:', error);
+                    showToast("Error saving transaction data", "error");
                 });
         }
     </script>

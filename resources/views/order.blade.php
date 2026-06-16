@@ -52,9 +52,8 @@
         <div class="flex mx-24 border-1 border-gray-200 bg-gray-200 rounded-xl mt-16 mb-4 select-none">
             @foreach ($products as $product)
             <label class="radio flex flex-grow items-center justify-center rounded-lg p-1 cursor-pointer">
-                <input type="radio" name="product_type" value="{{ $product->id }}" class="peer hidden"
-                    {{ request('product_type', 1) == $product->id ? 'checked' : '' }}
-                    onchange="this.form.submit()" />
+                <input type="radio" name="product_type" value="{{ $product->id }}" class="peer hidden product-type-radio"
+                    {{ request('product_type', 1) == $product->id ? 'checked' : '' }} />
                 <span
                     class="w-full py-2 text-center text-xl peer-checked:bg-orange-500 peer-checked:font-semibold peer-checked:text-white p-2 rounded-lg transition duration-150 ease-in-out">
                     {{ $product->name }}
@@ -63,7 +62,7 @@
             @endforeach
         </div>
     </form>
-    <form action="{{ route('order.store') }}" method="POST">
+    <form action="{{ route('order.store') }}" method="POST" onsubmit="document.getElementById('pay-button').disabled = true; document.getElementById('pay-button').innerText = 'Processing...';">
         @csrf
         <div class="grid grid-cols-2 gap-4 mx-24">
             <div class="col-span-2">
@@ -72,7 +71,7 @@
                 </label>
                 <textarea rows="7" placeholder="Enter the type of request for your Ads" id="content" name="requestInput"
                     class="shadow appearance-none border-2 border-gray-100 rounded-xl w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                    required></textarea>
+                    required>{{ old('requestInput') }}</textarea>
             </div>
             <div class="col-span-2">
                 <label for="orientation" class="block text-gray-700 text-lg font-bold mb-2">
@@ -81,14 +80,29 @@
                 <select
                     class="shadow appearance-none border-2 border-gray-100 rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                     name="orientation" required>
-                    <option value="" disabled selected>Choose Orientation</option>
-                    <option value="portrait">Portrait</option>
-                    <option value="landscape">Landscape</option>
+                    <option value="" disabled {{ old('orientation') ? '' : 'selected' }}>Choose Orientation</option>
+                    <option value="portrait" {{ old('orientation') == 'portrait' ? 'selected' : '' }}>Portrait</option>
+                    <option value="landscape" {{ old('orientation') == 'landscape' ? 'selected' : '' }}>Landscape</option>
                 </select>
             </div>
         </div>
 
         <div class="mx-24 mt-8 text-center">
+            @if(session('error'))
+                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+                    <span class="block sm:inline">{{ session('error') }}</span>
+                </div>
+            @endif
+            @if ($errors->any())
+                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+                    <ul class="list-disc text-left pl-5">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
             <h2 class="text-gray-700 text-2xl font-bold">
                 Package
             </h2>
@@ -96,51 +110,13 @@
                 Pick your ideal package and let us bring your vision to life
             </p>
 
-            <div class="grid grid-cols-4 md:grid-cols-3 gap-8 p-2 mx-24">
-                @foreach ($packages as $package)
-                <div class="flex flex-col relative">
-                    <input class="peer sr-only" id="package_{{ $package->id }}" name="package_id"
-                        value="{{ $package->id }}" type="radio" required />
-                    <div
-                        class="flex flex-col w-full h-full p-4 cursor-pointer rounded-xl border-2 border-gray-300 bg-gray-50 transition-transform duration-150 hover:border-blue-400 active:scale-95 peer-checked:border-blue-500 peer-checked:shadow-md peer-checked:shadow-blue-400">
-                        <label class="cursor-pointer peer-checked:text-blue-500" for="package_{{ $package->id }}">
-                            <h2 class="text-xl font-medium">{{ $package->name }}</h2>
-                            <h2 class="text-orange-500 font-bold py-3 text-4xl">IDR
-                                {{ number_format($package->price, 0, ',', '.') }}
-                            </h2>
-                            <h2 class="leading-5 mb-4 text-left">{{ $package->detail_package }}</h2>
-                            <div class="mb-20">
-                                @foreach ($benefits as $benefit)
-                                @if ($benefit->packages_id == $package->id)
-                                <div class="flex flex-row">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-                                        fill="currentColor" class="size-6 mr-2">
-                                        <path fill-rule="evenodd"
-                                            d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z"
-                                            clip-rule="evenodd" />
-                                    </svg>
-                                    <h2>{{ $benefit->benefit }}</h2>
-                                </div>
-                                @endif
-                                @endforeach
-                            </div>
-                            <div class="text-right absolute right-0 bottom-0 m-6">
-                                <p class="text-gray-600 -mb-1">
-                                    Working Time
-                                </p>
-                                <h2 class="text-gray-700 text-xl font-bold">
-                                    {{ $package->working_time }} {{ $package->unit }}
-                                </h2>
-                            </div>
-                        </label>
-                    </div>
-                </div>
-                @endforeach
+            <div class="grid grid-cols-4 md:grid-cols-3 gap-8 p-2 mx-24" id="packages-container">
+                @include('partials.packages')
             </div>
 
 
             <div class="w-full flex justify-end space-x-3 mt-8 mb-40">
-                <button
+                <button type="button"
                     class="bg-transparent w-60 py-[0.45rem] rounded-lg text-orange-500 border-2 border-orange-500 hover:bg-orange-700 focus:bg-orange-900 hover:border-orange-700 focus:border-orange-900 hover:text-white focus:text-white"
                     onclick="window.location.href='/services'">Cancel</button>
                 <button class="bg-orange-500 w-60 py-2 rounded-lg text-white hover:bg-orange-700 focus:bg-orange-900"
@@ -148,4 +124,32 @@
             </div>
         </div>
     </form>
+
+    <script>
+        document.querySelectorAll('.product-type-radio').forEach(radio => {
+            radio.addEventListener('change', function() {
+                const packagesContainer = document.getElementById('packages-container');
+                packagesContainer.style.opacity = '0.5';
+
+                const url = new URL(window.location.href);
+                url.searchParams.set('product_type', this.value);
+
+                fetch(url.toString(), {
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(response => response.text())
+                .then(html => {
+                    packagesContainer.innerHTML = html;
+                    packagesContainer.style.opacity = '1';
+                    window.history.pushState({}, '', url);
+                })
+                .catch(error => {
+                    console.error('Error fetching packages:', error);
+                    packagesContainer.style.opacity = '1';
+                });
+            });
+        });
+    </script>
 </x-app-layout>

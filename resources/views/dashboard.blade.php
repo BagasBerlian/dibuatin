@@ -161,18 +161,11 @@
             and make a meaningful impact.
         </p>
 
-        <!-- Gambar di sebelah kanan -->
-        <x-expert-service imagePosition="right" title="Short Video Ads"
-            desc="Engage your audience with captivating short video ads that convey your message in seconds. Perfect for social media platforms, these bite-sized videos capture attention and spark curiosity, driving immediate action from viewers. Whether you’re launching a new product or sharing an event, our short video ads are designed to create a lasting impression."
-            icon1="Instant Impact" icon2="Viral Potential" icon3="High Engagement" icon4="Mobile-Friendly"
-            image="/images/bg-short-adds.jpeg">
-        </x-expert-service>
-
-        <!-- Gambar di sebelah kiri -->
-        <x-expert-service imagePosition="left" title="Advertising Design"
-            desc="Boost your brand’s visibility with powerful advertising ads tailored to reach your target audience. From banner ads to interactive visuals, our advertising solutions are crafted to generate interest, increase engagement, and deliver measurable results. Maximize your marketing efforts and make an impact with ads that speak directly to the needs and desires of your audience."
-            icon1="Targeted Reach" icon2="Customizable Design" icon3="High Engagement" icon4="Measurable Result"
-            image="">
+        <!-- Professional Design Services -->
+        <x-expert-service imagePosition="right" title="Professional Design Services"
+            desc="Elevate your brand with our comprehensive design services. From professional logos and business cards to engaging brochures and lanyards, our creative solutions are crafted to meet your unique needs. Let us help you create a lasting impression and drive measurable results for your business."
+            icon1="Creative Excellence" icon2="Customizable Design" icon3="High Quality" icon4="Fast Turnaround"
+            image="/images/product_service.webp">
         </x-expert-service>
     </div>
 
@@ -379,7 +372,7 @@
                 class="max-w-4xl mx-auto bg-white shadow-md rounded-lg p-6 border flex flex-col md:flex-row items-center">
                 <!-- Profile Picture -->
                 <div class="flex-shrink-0">
-                    <img src="/images/profilepic.jpg" alt="Profile Picture"
+                    <img src="/images/profil-image-random.jpg" alt="Profile Picture"
                         class="w-32 h-32 rounded-full border-4 border-gray-300">
                 </div>
                 <!-- Testimonial Content -->

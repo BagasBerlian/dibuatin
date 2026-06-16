@@ -14,7 +14,7 @@ return new class extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->uuid('id')->primary()
-                ->default(DB::raw('(lower(hex(randomblob(16))))'));
+                ->default(DB::raw('(gen_random_uuid())'));
             $table->uuid('user_id');
             $table->unsignedBigInteger('package_id');
             $table->text('request');

@@ -19,22 +19,25 @@ class OrderController extends Controller
         
         $productTypeId = $request->input('product_type', 1); // Get selected product_type
         $packages = Package::with('product')->where('product_id', $productTypeId) ->get();
+        
+        if ($request->ajax()) {
+            return view('partials.packages', compact('packages', 'benefits'));
+        }
             
         return view('order', compact('products', 'packages', 'benefits'));
     }
     public function store(Request $request): RedirectResponse {
         $request->validate([
-            'package_id' => 'required|int',
-            'request' => 'text',
+            'package_id' => 'required|integer',
+            'requestInput' => 'nullable|string',
             'orientation' => 'required|string',
         ]);
-        Order::create([
+        $order = Order::create([
             'user_id' => Auth::user()->id,
-            'package_id'=> $request->package_id,
+            'package_id' => (int) $request->package_id,
             'request' => $request->requestInput,
             'orientation' => $request->orientation,
         ]);
-        $order = Order::orderBy('created_at', 'desc')->first();
         session()->put('order_id', $order->id);
         return redirect()->route('payment');
     }
