@@ -1,7 +1,7 @@
 @foreach ($packages as $package)
 <div class="flex flex-col relative">
     <input class="peer sr-only" id="package_{{ $package->id }}" name="package_id"
-        value="{{ $package->id }}" type="radio" required />
+        value="{{ $package->id }}" type="radio" />
     <div
         class="flex flex-col w-full h-full p-4 cursor-pointer rounded-xl border-2 border-gray-300 bg-gray-50 transition-transform duration-150 hover:border-blue-400 active:scale-95 peer-checked:border-blue-500 peer-checked:shadow-md peer-checked:shadow-blue-400">
         <label class="cursor-pointer peer-checked:text-blue-500" for="package_{{ $package->id }}">

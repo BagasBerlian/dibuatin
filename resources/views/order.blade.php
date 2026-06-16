@@ -62,7 +62,7 @@
             @endforeach
         </div>
     </form>
-    <form action="{{ route('order.store') }}" method="POST">
+    <form action="{{ route('order.store') }}" method="POST" onsubmit="document.getElementById('pay-button').disabled = true; document.getElementById('pay-button').innerText = 'Processing...';">
         @csrf
         <div class="grid grid-cols-2 gap-4 mx-24">
             <div class="col-span-2">
@@ -71,7 +71,7 @@
                 </label>
                 <textarea rows="7" placeholder="Enter the type of request for your Ads" id="content" name="requestInput"
                     class="shadow appearance-none border-2 border-gray-100 rounded-xl w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                    required></textarea>
+                    required>{{ old('requestInput') }}</textarea>
             </div>
             <div class="col-span-2">
                 <label for="orientation" class="block text-gray-700 text-lg font-bold mb-2">
@@ -80,14 +80,29 @@
                 <select
                     class="shadow appearance-none border-2 border-gray-100 rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                     name="orientation" required>
-                    <option value="" disabled selected>Choose Orientation</option>
-                    <option value="portrait">Portrait</option>
-                    <option value="landscape">Landscape</option>
+                    <option value="" disabled {{ old('orientation') ? '' : 'selected' }}>Choose Orientation</option>
+                    <option value="portrait" {{ old('orientation') == 'portrait' ? 'selected' : '' }}>Portrait</option>
+                    <option value="landscape" {{ old('orientation') == 'landscape' ? 'selected' : '' }}>Landscape</option>
                 </select>
             </div>
         </div>
 
         <div class="mx-24 mt-8 text-center">
+            @if(session('error'))
+                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+                    <span class="block sm:inline">{{ session('error') }}</span>
+                </div>
+            @endif
+            @if ($errors->any())
+                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+                    <ul class="list-disc text-left pl-5">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
             <h2 class="text-gray-700 text-2xl font-bold">
                 Package
             </h2>
@@ -101,7 +116,7 @@
 
 
             <div class="w-full flex justify-end space-x-3 mt-8 mb-40">
-                <button
+                <button type="button"
                     class="bg-transparent w-60 py-[0.45rem] rounded-lg text-orange-500 border-2 border-orange-500 hover:bg-orange-700 focus:bg-orange-900 hover:border-orange-700 focus:border-orange-900 hover:text-white focus:text-white"
                     onclick="window.location.href='/services'">Cancel</button>
                 <button class="bg-orange-500 w-60 py-2 rounded-lg text-white hover:bg-orange-700 focus:bg-orange-900"
