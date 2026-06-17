@@ -1,104 +1,50 @@
-# Dibuatin
+# Dibuatin - Technical Architecture & Overview
 
-Dibuatin adalah platform web mutakhir yang dibangun menggunakan **Laravel** dan **Filament PHP**. Proyek ini ditujukan untuk mempermudah alur kerja pemesanan paket, manajemen proyek, pelacakan transaksi pembayaran, serta kolaborasi file antara Admin, Worker, dan Pengguna (Klien).
+Dibuatin adalah platform web untuk pemesanan layanan digital yang dibangun dengan **Laravel 11** dan **Filament PHP**. Dokumen ini berfokus pada detail teknis, arsitektur sistem, dan alur kerja fungsionalitas utama (terutama berfokus pada integrasi pihak ketiga dan struktur *serverless*).
 
-## 🚀 Fitur Utama
+## 1. Arsitektur Sistem
 
-- **Role-Based Access Control (RBAC):** Pemisahan hak akses dan dasbor khusus untuk `Admin`, `Worker`, dan Pengguna biasa menggunakan Filament.
-- **Manajemen Pesanan & Proyek:** Lacak status pesanan (*order*), paket (*package*), dan proyek yang sedang berjalan.
-- **Penyimpanan Berbasis Cloud:** Terintegrasi penuh dengan **Supabase S3** untuk penyimpanan *file upload* yang aman dan terpusat.
-- **Payment Gateway:** Terintegrasi dengan **Midtrans** untuk memproses pembayaran secara real-time dan aman.
-- **Siap Deployment Vercel:** Proyek ini sudah dikonfigurasi untuk *serverless deployment* di Vercel.
+Karena aplikasi ini dikembangkan untuk berjalan di lingkungan *serverless* (Vercel), seluruh state aplikasi, penyimpanan *file*, dan *database* harus didesain sepenuhnya *stateless* (tidak bergantung pada penyimpanan lokal).
 
-## 🛠️ Tech Stack
+- **Framework Core:** Laravel 11.x berjalan pada PHP 8.3+ menggunakan `vercel-php`.
+- **Database Layer:** PostgreSQL yang di-*host* di [Neon DB](https://neon.tech/), terhubung secara aman dengan parameter koneksi *SSL-required* dan *Connection Pooling*.
+- **Object Storage:** Terintegrasi menggunakan Driver S3 (*League Flysystem*) menuju **Supabase Storage**.
+- **Admin Panel & UI:** Menggunakan [Filament PHP](https://filamentphp.com/) (mengandalkan Livewire dan Alpine.js) dengan penerapan *Multiple Panels* untuk RBAC.
+- **Payment Gateway:** Terhubung dengan API **Midtrans** (menggunakan *Snap* dan HTTP *Webhook Callback*).
 
-- **Framework:** Laravel 11.x, PHP 8.3+
-- **Database:** PostgreSQL (didukung oleh [Neon DB](https://neon.tech/))
-- **Admin Panel:** [Filament PHP](https://filamentphp.com/) (Livewire & Alpine.js)
-- **File Storage:** [Supabase Storage](https://supabase.com/storage) (S3-Compatible)
-- **Payment Gateway:** [Midtrans](https://midtrans.com/)
-- **Deployment:** Vercel (menggunakan `vercel-php`)
+## 2. Struktur Database & Entitas Inti
 
-## ⚙️ Persyaratan Sistem
+Relasi antar model diatur secara ketat untuk mendukung alur pemesanan yang otomatis:
 
-- PHP >= 8.3
-- Composer
-- Node.js & NPM (untuk *asset build*)
-- PostgreSQL
+- **User:** Diatur berdasarkan peran atau `role` (`admin`, `worker`, `user`).
+- **Package & BenefitPackage:** Master data untuk produk/layanan yang ditawarkan.
+- **Order & Transaction:** Menangani *lifecycle* pembelian klien. `Order` mencatat data pesanan mentah, sedangkan `Transaction` mengelola *state* pembayaran (misal: *pending*, *settlement*, *expire*).
+- **Project:** Secara otomatis/manual di-generate dari `Order` yang pembayarannya telah lunas. Proyek ini akan di-*assign* ke `worker` spesifik.
+- **File:** Merepresentasikan *deliverable* pekerjaan. Terhubung (`BelongsTo`) ke entitas `Project` dan `User` (Worker).
 
-## 💻 Instalasi Lokal
+## 3. Role-Based Access Control (Filament Panels)
 
-Ikuti langkah-langkah berikut untuk menjalankan proyek ini di mesin lokal Anda (misalnya menggunakan Laravel Herd atau XAMPP):
+Sistem menggunakan penerapan *Multi-panel* Filament untuk mengamankan akses data:
+1. **Admin Panel** (`/admin`): Memiliki wewenang CRUD penuh atas pengguna, transaksi, pembuatan paket, serta pendelegasian proyek ke *worker*.
+2. **Worker Panel** (`/worker`): Dasbor dengan lingkup terbatas (`UploadFileResource`). Hanya bisa melihat proyek yang ditugaskan kepada mereka dan dapat mengunggah file hasil kerja ke proyek tersebut. Akses direstriksi melalui manipulasi *Eloquent Builder* di tingkat *Resource*.
 
-1. **Kloning Repositori**
-   ```bash
-   git clone https://github.com/username-anda/dibuatin.git
-   cd dibuatin
-   ```
+## 4. Mekanisme File Upload & Integrasi Supabase S3
 
-2. **Instalasi Dependensi PHP & Node**
-   ```bash
-   composer install
-   npm install && npm run build
-   ```
+Lingkungan *serverless* Vercel bersifat *ephemeral* (direktori sementara `/tmp` hilang setelah *request* selesai). Hal ini menuntut perancangan *file handling* yang khusus:
 
-3. **Pengaturan Environment**
-   Salin file `.env.example` menjadi `.env` lalu buat *Application Key*:
-   ```bash
-   cp .env.example .env
-   php artisan key:generate
-   ```
+- **Livewire Temporary Uploads:** Direktori sementara Livewire telah diarahkan agar bisa kompatibel dengan sistem perutean S3/lokal, guna menghindari kegagalan penyimpanan file karena hilangnya *local tmp*.
+- **Hook pada Eloquent Model (`App\Models\File`):**
+  - **Event `creating`:** Mengintersepsi file yang diunggah untuk menamai ulang (*rename*) secara terstruktur. Format otomatis yang digunakan: `slug(nama_paket - nama_klien)-timestamp.ekstensi`. Ini memastikan URL file rapi dan seragam.
+  - **Event `created`:** Memindahkan file dari lokasi `temp` Livewire ke direktori S3 tujuan (`folder_paket/nama_file`). 
+  - **Fallback Stream Copy:** Terdapat modifikasi teknis untuk melewati fungsi bawaan `move()` milik S3 Flysystem dengan cara *stream copy* manual (`readStream` -> `writeStream`). Ini dirancang khusus karena *gateway* Supabase S3 sering kali menolak *request* `CopyObject` API standar dari AWS SDK.
 
-4. **Konfigurasi Variabel `.env`**
-   Buka file `.env` dan isi kredensial berikut:
-   - **Database (Neon DB):**
-     ```env
-     DB_CONNECTION=pgsql
-     DB_HOST=ep-...aws.neon.tech
-     DB_PORT=5432
-     DB_DATABASE=dibuatin
-     DB_USERNAME=neondb_owner
-     DB_PASSWORD=secret
-     DB_SSLMODE=require
-     ```
-   - **S3 / Supabase Storage:**
-     ```env
-     FILESYSTEM_DISK=s3
-     LIVEWIRE_TMP_DISK=public
-     AWS_ACCESS_KEY_ID=kunci_access_anda
-     AWS_SECRET_ACCESS_KEY=kunci_secret_anda
-     AWS_DEFAULT_REGION=ap-southeast-1
-     AWS_BUCKET=dibuatin
-     AWS_ENDPOINT=https://[project-id].storage.supabase.co/storage/v1/s3
-     AWS_USE_PATH_STYLE_ENDPOINT=true
-     ```
-   - **Midtrans:**
-     ```env
-     MIDTRANS_MERCHANT_ID=...
-     MIDTRANS_CLIENT_KEY=...
-     MIDTRANS_SERVER_KEY=...
-     MIDTRANS_PRODUCTION=false
-     ```
+## 5. Integrasi Payment Gateway (Midtrans)
 
-5. **Migrasi Database & Seeder**
-   ```bash
-   php artisan migrate --seed
-   ```
+- **Snap Token Generation:** Saat Pengguna melakukan validasi pesanan, *backend* akan mengirimkan detail *payload* pesanan ke API Midtrans untuk mendapatkan *Snap Token*.
+- **Callback / Webhook Notification:** *Endpoint* khusus dibuat dan dikecualikan dari *CSRF verification* untuk menerima notifikasi asinkron dari Midtrans. Apabila notifikasi menyatakan `settlement` atau `capture`, *backend* secara otomatis mengubah *status* transaksi dan merilis alur kerja selanjutnya (misalnya: pembuatan entitas `Project`).
 
-6. **Jalankan Server Lokal**
-   ```bash
-   php artisan serve
-   ```
-   Akses aplikasi pada `http://localhost:8000` dan dasbor admin di `http://localhost:8000/admin`.
+## 6. Vercel Serverless Routing (`vercel.json`)
 
-## 🌐 Panduan Deployment (Vercel)
-
-Aplikasi ini menggunakan file `vercel.json` di *root* direktori untuk pengaturan *environment* saat tahap produksi.
-
-Untuk *deploy* ke Vercel:
-1. Pastikan Anda sudah menginstal Vercel CLI (`npm i -g vercel`).
-2. Jalankan perintah `vercel --prod` di terminal.
-3. Kredensial penting (Database, S3, Midtrans) dapat diatur langsung di dalam dashboard Vercel pada bagian **Environment Variables** (Sangat disarankan demi keamanan) atau bisa dimuat sementara di dalam konfigurasi `vercel.json`.
-
----
-*Dibuatin - Bringing your digital projects to life.*
+Agar *routing* Laravel berfungsi optimal dan *assets* terbaca di Vercel:
+- *Request* menuju `public/build`, `public/css`, `public/images` dicegat (*intercept*) oleh *static routing* Vercel untuk dikirim via CDN.
+- Sisa *request* selain aset statis diarahkan secara *catch-all* menuju `/api/index.php` yang menampung kernel *bootstraping* Laravel. Variabel environment kritis juga diatur atau dirujuk melalui file konfigurasi ini.
