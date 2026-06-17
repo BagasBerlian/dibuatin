@@ -15,12 +15,13 @@ $app = Application::configure(basePath: dirname(__DIR__))
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
-    });
+    })
+    ->create();
 
-// Harus dikonfigurasi SEBELUM ->create() agar Laravel boot dengan path yang benar
+
 if (isset($_ENV['VERCEL']) || getenv('VERCEL')) {
     $app->useStoragePath('/tmp/storage');
     $app->useBootstrapPath('/tmp/bootstrap');
 }
 
-return $app->create();
+return $app;
