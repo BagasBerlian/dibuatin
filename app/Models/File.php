@@ -13,6 +13,8 @@ class File extends Model
 {
     use HasFactory, SoftDeletes;
 
+    public ?string $_original_file_name_tmp = null;
+
     protected $fillable = [
         'project_id',
         'file_name',
@@ -57,6 +59,7 @@ class File extends Model
 
                     // Get original filename from the temporary file
                     $originalPath = $file->file_name;
+                    $file->_original_file_name_tmp = $originalPath;
                     $originalExtension = pathinfo($originalPath, PATHINFO_EXTENSION);
 
                     // Create formatted file name
@@ -77,17 +80,42 @@ class File extends Model
 
         static::created(function ($file) {
             if ($file->file_name && $file->file_path) {
-                $originalFile = $file->getOriginal('file_name');
+                $originalFile = $file->_original_file_name_tmp ?? $file->getOriginal('file_name');
+                
+                if (!$originalFile) {
+                    return;
+                }
 
-                if (Storage::disk('public')->exists('temp/' . $originalFile)) {
-                    // Create package directory
-                    Storage::disk('public')->makeDirectory($file->file_path);
+                $disk = env('FILESYSTEM_DISK', 'public');
 
-                    // Move the file
-                    Storage::disk('public')->move(
-                        'temp/' . $originalFile,
-                        $file->file_path . '/' . $file->file_name
-                    );
+                // Filament FileUpload might prepend the directory name (e.g. 'temp/') to the original file name.
+                // We will check if the original file exists as-is, or try prepending 'temp/' just in case.
+                $sourcePath = Storage::disk($disk)->exists($originalFile) ? $originalFile : null;
+                if (!$sourcePath && Storage::disk($disk)->exists('temp/' . basename($originalFile))) {
+                    $sourcePath = 'temp/' . basename($originalFile);
+                }
+
+                if ($sourcePath) {
+                    // Create package directory (S3 doesn't really need this, but good for local)
+                    Storage::disk($disk)->makeDirectory($file->file_path);
+
+                    $destinationPath = $file->file_path . '/' . $file->file_name;
+
+                    // Supabase S3 sometimes fails on the native CopyObject API used by move()
+                    // So we manually copy using streams and then delete the original
+                    try {
+                        Storage::disk($disk)->move($sourcePath, $destinationPath);
+                    } catch (\Exception $e) {
+                        // Fallback to stream copy if move fails
+                        $stream = Storage::disk($disk)->readStream($sourcePath);
+                        if ($stream) {
+                            Storage::disk($disk)->writeStream($destinationPath, $stream);
+                            if (is_resource($stream)) {
+                                fclose($stream);
+                            }
+                            Storage::disk($disk)->delete($sourcePath);
+                        }
+                    }
                 }
             }
         });

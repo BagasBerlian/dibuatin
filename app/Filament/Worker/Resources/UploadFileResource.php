@@ -63,6 +63,7 @@ class UploadFileResource extends Resource
                     ->required()
                     ->preserveFilenames()
                     ->directory('temp')
+                    ->disk(env('FILESYSTEM_DISK', 'public'))
                     ->visibility('public')
                     ->maxSize(10 * 1024),
 
