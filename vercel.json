@@ -12,13 +12,75 @@
         }
     ],
     "routes": [
-        { "src": "/build/(.*)", "dest": "/public/build/$1" },
-        { "src": "/css/(.*)", "dest": "/public/css/$1" },
-        { "src": "/js/(.*)", "dest": "/public/js/$1" },
-        { "src": "/images/(.*)", "dest": "/public/images/$1" },
-        { "src": "/videos/(.*)", "dest": "/public/videos/$1" },
-        { "src": "/robots\\.txt", "dest": "/public/robots.txt" },
-        { "src": "/favicon\\.ico", "dest": "/public/favicon.ico" },
-        { "src": "/(.*)", "dest": "/api/index.php" }
-    ]
+        {
+            "src": "/build/(.*)",
+            "dest": "/public/build/$1"
+        },
+        {
+            "src": "/css/(.*)",
+            "dest": "/public/css/$1"
+        },
+        {
+            "src": "/js/(.*)",
+            "dest": "/public/js/$1"
+        },
+        {
+            "src": "/images/(.*)",
+            "dest": "/public/images/$1"
+        },
+        {
+            "src": "/videos/(.*)",
+            "dest": "/public/videos/$1"
+        },
+        {
+            "src": "/robots\\.txt",
+            "dest": "/public/robots.txt"
+        },
+        {
+            "src": "/favicon\\.ico",
+            "dest": "/public/favicon.ico"
+        },
+        {
+            "src": "/(.*)",
+            "dest": "/api/index.php"
+        }
+    ],
+    "env": {
+        "APP_NAME": "Dibuatin",
+        "APP_ENV": "production",
+        "APP_DEBUG": "true",
+        "APP_URL": "https://dibuatin-ten.vercel.app",
+        "APP_KEY": "base64:JR0pOOz+TnGzSCm6ymYJJPTKRy79d5NZvkHxegGFm0w=",
+        "APP_CONFIG_CACHE": "/tmp/config.php",
+        "APP_EVENTS_CACHE": "/tmp/events.php",
+        "APP_PACKAGES_CACHE": "/tmp/packages.php",
+        "APP_ROUTES_CACHE": "/tmp/routes.php",
+        "APP_SERVICES_CACHE": "/tmp/services.php",
+        "VIEW_COMPILED_PATH": "/tmp/storage/framework/views",
+        "CACHE_DRIVER": "array",
+        "CACHE_STORE": "array",
+        "LOG_CHANNEL": "stderr",
+        "SESSION_DRIVER": "cookie",
+        "SESSION_LIFETIME": "120",
+        "QUEUE_CONNECTION": "sync",
+        "FILESYSTEM_DISK": "s3",
+        "LIVEWIRE_TMP_DISK": "s3",
+        "AWS_ACCESS_KEY_ID": "3581f69d00c5a45a3d2416811d62699a",
+        "AWS_SECRET_ACCESS_KEY": "d8d5ad8b19f3a7b5ae516db1a08a034b514fbd17359d1f7fab5987e291251a22",
+        "AWS_DEFAULT_REGION": "ap-southeast-1",
+        "AWS_BUCKET": "dibuatin",
+        "AWS_ENDPOINT": "https://ikcgryclfeyetrhewicy.storage.supabase.co/storage/v1/s3",
+        "AWS_USE_PATH_STYLE_ENDPOINT": "true",
+        "DB_CONNECTION": "pgsql",
+        "DB_HOST": "ep-bitter-sound-aojrgiff-pooler.c-2.ap-southeast-1.aws.neon.tech",
+        "DB_PORT": "5432",
+        "DB_DATABASE": "dibuatin",
+        "DB_USERNAME": "neondb_owner",
+        "DB_PASSWORD": "npg_fYzX6lKVGM5a",
+        "DB_SSLMODE": "require;options=endpoint=ep-bitter-sound-aojrgiff-pooler",
+        "MIDTRANS_PRODUCTION": "false",
+        "MIDTRANS_SANITIZED": "true",
+        "MIDTRANS_3DS": "true",
+        "VERCEL": "1"
+    }
 }
