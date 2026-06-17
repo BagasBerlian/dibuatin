@@ -8,23 +8,19 @@
     },
     "routes": [
         {
-            "src": "/build/(.*)",
-            "dest": "/public/build/$1"
-        },
-        {
-            "src": "/(.*\\.(css|js|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot|webp|webm|mp4|pdf|txt|xml|json))",
-            "dest": "/public/$1"
+            "handle": "filesystem"
         },
         {
             "src": "/(.*)",
             "dest": "/api/index.php"
         }
     ],
+    "outputDirectory": "public",
     "buildCommand": "npm ci && npm run build",
     "env": {
         "APP_NAME": "Dibuatin",
         "APP_ENV": "production",
-        "APP_DEBUG": "false",
+        "APP_DEBUG": "true",
         "APP_URL": "https://dibuatin-ten.vercel.app",
         "APP_KEY": "base64:JR0pOOz+TnGzSCm6ymYJJPTKRy79d5NZvkHxegGFm0w=",
         "APP_CONFIG_CACHE": "/tmp/config.php",
