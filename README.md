@@ -1,5 +1,7 @@
 # Dibuatin - Technical Architecture & Overview
 
+🌍 **Live Deployment:** [https://dibuatin-three.vercel.app](https://dibuatin-three.vercel.app)
+
 Dibuatin adalah platform web untuk pemesanan layanan digital yang dibangun dengan **Laravel 11** dan **Filament PHP**. Dokumen ini berfokus pada detail teknis, arsitektur sistem, dan alur kerja fungsionalitas utama (terutama berfokus pada integrasi pihak ketiga dan struktur *serverless*).
 
 ## 1. Arsitektur Sistem
