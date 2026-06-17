@@ -62,7 +62,6 @@ class UploadFileResource extends Resource
                     ->acceptedFileTypes(['image/*', 'application/pdf', 'video/*'])
                     ->required()
                     ->preserveFilenames()
-                    ->disk('public')
                     ->directory('temp')
                     ->visibility('public')
                     ->maxSize(10 * 1024),
