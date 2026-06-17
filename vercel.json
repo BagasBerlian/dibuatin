@@ -7,19 +7,14 @@
         }
     },
     "routes": [
-        { "src": "/build/(.*)",  "dest": "/public/build/$1"  },
-        { "src": "/css/(.*)",    "dest": "/public/css/$1"    },
-        { "src": "/js/(.*)",     "dest": "/public/js/$1"     },
-        { "src": "/images/(.*)", "dest": "/public/images/$1" },
-        { "src": "/videos/(.*)", "dest": "/public/videos/$1" },
-        { "src": "/favicon.ico", "dest": "/public/favicon.ico" },
-        { "src": "/robots.txt",  "dest": "/public/robots.txt"  },
-        { "src": "/(.*)",        "dest": "/api/index.php"    }
+        { "handle": "filesystem" },
+        { "src": "/(.*)", "dest": "/api/index.php" }
     ],
     "buildCommand": "npm ci && npm run build",
     "env": {
         "APP_NAME": "Dibuatin",
         "APP_ENV": "production",
+        "ASSET_URL": "/public",
         "APP_DEBUG": "true",
         "APP_URL": "https://dibuatin-ten.vercel.app",
         "APP_KEY": "base64:JR0pOOz+TnGzSCm6ymYJJPTKRy79d5NZvkHxegGFm0w=",
