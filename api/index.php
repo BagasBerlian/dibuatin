@@ -5,7 +5,8 @@ $directories = [
     '/tmp/storage/framework/views',
     '/tmp/storage/framework/cache/data',
     '/tmp/storage/framework/sessions',
-    '/tmp/bootstrap/cache'
+    '/tmp/bootstrap/cache',
+    '/tmp/storage/app/public',
 ];
 
 foreach ($directories as $dir) {

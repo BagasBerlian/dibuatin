@@ -15,11 +15,13 @@ $app = Application::configure(basePath: dirname(__DIR__))
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
-    })->create();
+    })
+    ->create();
+
 
 if (isset($_ENV['VERCEL']) || getenv('VERCEL')) {
-    $app->useBootstrapPath('/tmp/bootstrap');
     $app->useStoragePath('/tmp/storage');
+    $app->useBootstrapPath('/tmp/bootstrap');
 }
 
 return $app;
