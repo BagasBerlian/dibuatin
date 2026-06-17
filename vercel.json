@@ -16,7 +16,6 @@
             "dest": "/api/index.php"
         }
     ],
-    "public": true,
     "buildCommand": "vite build",
     "outputDirectory": "public",
     "env": {
