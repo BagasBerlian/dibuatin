@@ -3,35 +3,64 @@
     "framework": null,
     "functions": {
         "api/index.php": {
-            "runtime": "vercel-php@0.6.0"
+            "runtime": "vercel-php@0.9.0"
         }
     },
     "routes": [
         {
             "src": "/build/(.*)",
-            "dest": "/public/build/"
+            "dest": "/public/build/$1"
+        },
+        {
+            "src": "/css/(.*)",
+            "dest": "/public/css/$1"
+        },
+        {
+            "src": "/js/(.*)",
+            "dest": "/public/js/$1"
+        },
+        {
+            "src": "/images/(.*)",
+            "dest": "/public/images/$1"
+        },
+        {
+            "src": "/videos/(.*)",
+            "dest": "/public/videos/$1"
+        },
+        {
+            "src": "/favicon.ico",
+            "dest": "/public/favicon.ico"
+        },
+        {
+            "src": "/robots.txt",
+            "dest": "/public/robots.txt"
         },
         {
             "src": "/(.*)",
             "dest": "/api/index.php"
         }
     ],
-    "buildCommand": "vite build",
+    "buildCommand": "composer install --no-dev --optimize-autoloader && npm ci && npm run build",
     "outputDirectory": "public",
     "env": {
+        "APP_NAME": "Dibuatin",
         "APP_ENV": "production",
         "APP_DEBUG": "false",
-        "APP_URL": "https://dibuatin-ten.vercel.app/",
+        "APP_URL": "https://dibuatin-ten.vercel.app",
         "APP_KEY": "base64:JR0pOOz+TnGzSCm6ymYJJPTKRy79d5NZvkHxegGFm0w=",
         "APP_CONFIG_CACHE": "/tmp/config.php",
         "APP_EVENTS_CACHE": "/tmp/events.php",
         "APP_PACKAGES_CACHE": "/tmp/packages.php",
         "APP_ROUTES_CACHE": "/tmp/routes.php",
         "APP_SERVICES_CACHE": "/tmp/services.php",
-        "VIEW_COMPILED_PATH": "/tmp",
+        "VIEW_COMPILED_PATH": "/tmp/storage/framework/views",
         "CACHE_DRIVER": "array",
+        "CACHE_STORE": "array",
         "LOG_CHANNEL": "stderr",
         "SESSION_DRIVER": "cookie",
+        "SESSION_LIFETIME": "120",
+        "QUEUE_CONNECTION": "sync",
+        "FILESYSTEM_DISK": "local",
         "DB_CONNECTION": "pgsql",
         "DB_HOST": "ep-bitter-sound-aojrgiff-pooler.c-2.ap-southeast-1.aws.neon.tech",
         "DB_PORT": "5432",
@@ -39,6 +68,13 @@
         "DB_USERNAME": "neondb_owner",
         "DB_PASSWORD": "npg_fYzX6lKVGM5a",
         "DB_SSLMODE": "require",
-        "DB_OPTIONS": "endpoint=ep-bitter-sound-aojrgiff-pooler"
+        "DB_OPTIONS": "endpoint=ep-bitter-sound-aojrgiff-pooler",
+        "MIDTRANS_MERCHANT_ID": "G410279785",
+        "MIDTRANS_CLIENT_KEY": "SB-Mid-client-EOBpDvilUbvsT3kN",
+        "MIDTRANS_SERVER_KEY": "SB-Mid-server-yfZ7l-fr65FmqB4hI05s_mzM",
+        "MIDTRANS_PRODUCTION": "false",
+        "MIDTRANS_SANITIZED": "true",
+        "MIDTRANS_3DS": "true",
+        "VERCEL": "1"
     }
 }
